@@ -1,0 +1,35 @@
+{
+  "name": "@artonline/node",
+  "productName": "ArtOnline Node",
+  "setupName": "ArtOnlineNodeSetup",
+  "version": "1.0.0",
+  "description": "ArtOnline Node GUI",
+  "company": "Artonline",
+  "appId": "org.artonline.nodegui",
+  "copyright": "Copyright © 2022 ArtOnline",
+  "main": "./app/index.js",
+  "scripts": {
+    "start": "electron app/index.js",
+    "build": "rollup -c && electron-kit",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [],
+  "author": {
+    "name": "vandeurenglenn",
+    "email": "vandeurenglenn@gmail.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-json": "^4.1.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "rollup": "^2.74.1"
+  },
+  "dependencies": {
+    "@leofcoin/chain": "^1.0.6",
+    "@leofcoin/peernet": "^0.11.25",
+    "@vandeurenglenn/debug": "^1.0.0",
+    "@vandeurenglenn/flex-elements": "^0.1.0",
+    "@vandeurenglenn/little-pubsub": "^1.3.3",
+    "electron": "^18.2.4"
+  }
+}
