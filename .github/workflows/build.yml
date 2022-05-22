@@ -20,7 +20,7 @@ jobs:
           node-version: 16
 
       - name: Electron Kit Action
-        uses: VandeurenGlenn/action-electron-kit@v1.0.0
+        uses: VandeurenGlenn/action-electron-kit@v1.1.1
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)

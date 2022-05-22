@@ -9,6 +9,7 @@
   "copyright": "Copyright © 2022 ArtOnline",
   "main": "./app/index.js",
   "scripts": {
+    "install": "npm i -g rollup",
     "start": "electron app/index.js",
     "build": "rollup -c && electron-kit",
     "dev": "rollup -c -w"
