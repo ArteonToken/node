@@ -26,7 +26,7 @@
     "rollup": "^2.74.1"
   },
   "dependencies": {
-    "@leofcoin/chain": "^1.0.6",
+    "@leofcoin/chain": "^1.0.7",
     "@leofcoin/peernet": "^0.11.25",
     "@vandeurenglenn/debug": "^1.0.0",
     "@vandeurenglenn/flex-elements": "^0.1.0",

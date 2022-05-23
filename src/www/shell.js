@@ -3,8 +3,10 @@ import './../../node_modules/@vandeurenglenn/flex-elements/src/flex-elements'
 
 import './clipboard-copy.js'
 import './wallet'
+import api from './api'
 
 globalThis.pubsub = globalThis.pubsub || new Pubsub()
+globalThis.api = globalThis.api || api
 
 export default customElements.define('app-shell', class AppShell extends HTMLElement {
   constructor() {
@@ -14,7 +16,7 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
   }
 
   async init() {
-    this.peerId = await chainRequest('peerId')
+    this.peerId = await api.peerId()
   }
 
   set peerId(value) {
@@ -22,26 +24,7 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
   }
 
   connectedCallback() {
-    const worker = new Worker('./chain.js')
-    console.log(worker);
     pubsub.subscribe('chain:ready', this.init.bind(this))
-
-    globalThis.chainRequest = (method, params) => new Promise((resolve,  reject) => {
-      const id = Math.random().toString(36).slice(-12);
-      const handle = m => {
-        resolve(m.data)
-        pubsub.unsubscribe(id, handle)
-      }
-      pubsub.subscribe(id, handle)
-      worker.postMessage({id, method, params})
-    })
-
-    worker.onmessage = (m) => {
-      console.log(m.data);
-
-      if (m.data === 'ready') pubsub.publish('chain:ready', true)
-      if (m.data.id) pubsub.publish(m.data.id, m.data)
-    }
   }
 
   get template() {
