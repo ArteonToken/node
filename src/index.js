@@ -69,10 +69,12 @@ if (handleSquirrelEvent()) {} else {
   const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-      width: 800,
-      height: 600,
+      width: 1040,
+      height: 640,
       webPreferences: {
-        nodeIntegrationInWorker: true
+        nodeIntegration: true,
+        nodeIntegrationInWorker: true,
+        preload: path.join(__dirname, 'preload.js')
       }
     });
 

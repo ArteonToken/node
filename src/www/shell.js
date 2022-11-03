@@ -1,30 +1,63 @@
 import Pubsub from './../../node_modules/@vandeurenglenn/little-pubsub/src/index'
 import './../../node_modules/@vandeurenglenn/flex-elements/src/flex-elements'
+import './../../node_modules/custom-pages/src/custom-pages'
+import './../../node_modules/custom-selector/src/index'
+import './../../node_modules/custom-svg-iconset/src/custom-svg-iconset'
+import './../../node_modules/custom-svg-icon/src/custom-svg-icon'
+import './array-repeat'
 
 import './clipboard-copy.js'
-import './wallet'
-import api from './api'
+import icons from './icons'
 
-globalThis.pubsub = globalThis.pubsub || new Pubsub()
-globalThis.api = globalThis.api || api
+globalThis.pubsub = globalThis.pubsub || new Pubsub({verbose: true})
 
 export default customElements.define('app-shell', class AppShell extends HTMLElement {
+
   constructor() {
     super()
     this.attachShadow({mode: 'open'})
     this.shadowRoot.innerHTML = this.template
   }
 
-  async init() {
-    this.peerId = await api.peerId()
+  get #pages() {
+    return this.shadowRoot.querySelector('custom-pages')
   }
 
-  set peerId(value) {
-    this.shadowRoot.querySelector('.peer-id').innerHTML = value
+  async #select(selected) {
+    if (!customElements.get(`${selected}-view`)) await import(`./${selected}.js`)
+    this.#pages.select(selected)
+  }
+
+  async #onhashchange() {
+    const selected = location.hash.split('/')[1]
+    selected && this.#select(selected)
+  }
+
+  async init() {
+    
+
+    // pubsub.subscribe('chain:ready', this.apiReady.bind(this))
+    // const imp = await import('./api.js')
+
+    // globalThis.api = globalThis.api || imp.default
+    if (this.hasAttribute('api-ready')) {
+      this.apiReady()
+    } else {
+      setTimeout(() => {
+        return this.init()
+      }, 100)
+    }
+  }
+
+  async apiReady() {
+    onhashchange = this.#onhashchange.bind(this)
+    if (location.hash.split('/')[1]) this.#select(location.hash.split('/')[1])
+    else this.#select('wallet')
   }
 
   connectedCallback() {
-    pubsub.subscribe('chain:ready', this.init.bind(this))
+    this.peersConnected = 0
+    this.init()
   }
 
   get template() {
@@ -44,25 +77,54 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
         background: linear-gradient(45deg, #66477c, transparent);
       }
 
-      .peer-id {
-        border: 1px solid white;
-        background: #7f6592;
-        border-radius: 12px;
-        color: aliceblue;
-        position: absolute;
-        /* top: 50%; */
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 12px;
+      .main {
+        height: -webkit-fill-available;
+      }
+
+      custom-selector {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .custom-selector-overlay {
+        background: #ffffff8c;
+        --svg-icon-color: #66477c;
+        border-right: 1px solid #eee;
+      }
+
+      a {
+        padding: 12px;
+        box-sizing: border-box;
+        height: 48px;
       }
     </style>
-    <wallet-element></wallet-element>
-    <flex-row>
-      <flex-one></flex-one>
-      <clipboard-copy class="peer-id">
-        loading...
-      </clipboard-copy>
+    ${icons}
+    <flex-row class="main">
+      <span class="custom-selector-overlay">
+        <custom-selector attr-for-selected="data-route">
+          <a href="#!/wallet" data-route="wallet">
+            <custom-svg-icon icon="wallet"></custom-svg-icon>
+          </a>
+          <a href="#!/validator" data-route="validator">
+            <custom-svg-icon icon="gavel"></custom-svg-icon>
+          </a>
+          <a href="#!/stats" data-route="stats">
+            <custom-svg-icon icon="stats"></custom-svg-icon>
+          </a>
+        </custom-selector>
+      </span>
+
+        <custom-pages attr-for-selected="data-route">
+          <wallet-view data-route="wallet"></wallet-view>
+          <validator-view data-route="validator"></validator-view>
+          <stats-view data-route="stats"></stats-view>
+        </custom-pages>
+
+
+
     </flex-row>
+
 
     `
   }
