@@ -19,6 +19,15 @@ jobs:
         with:
           node-version: 16
 
+      - name: install rollup
+        run: npm i -g rollup
+
+      - name: install project dependencies
+        run: npm i
+
+      - name: install app dependencies
+        run: cd app && npm i && cd ..
+
       - name: Electron Kit Action
         uses: VandeurenGlenn/action-electron-kit@v1.1.1
         with:
