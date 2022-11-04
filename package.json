@@ -41,7 +41,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@leofcoin/chain": "^1.1.0",
+    "@leofcoin/chain": "^1.1.10",
     "@leofcoin/lib": "^1.0.6",
     "@leofcoin/utils": "^1.0.4",
     "@leofcoin/workers": "^1.0.0",
