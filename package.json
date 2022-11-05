@@ -9,12 +9,15 @@
   "copyright": "Copyright © 2022 ArtOnline",
   "main": "./app/index.js",
   "scripts": {
+    "install-dependencies": "npm i && cd app && npm i && cd ..",
     "docs": "sh node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
     "start": "electron app/index.js",
     "c": "rollup -c",
     "build": "rollup -c && electron-kit",
-    "dev": "rollup -c -w",
-    "pack": "webpack"
+    "watch": "rollup -c -w",
+    "pack": "webpack",
+    "start-dev": "npm run install-dependencies && npm run c && npm run start",
+    "dev": "npm run install dependencies && npm run watch"
   },
   "keywords": [],
   "author": {
