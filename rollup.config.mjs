@@ -47,22 +47,22 @@ export default [{
   input: ['./node_modules/@leofcoin/workers/src/machine-worker.js'],
   output: [{
     dir: 'app/workers',
-    format: 'es'
+    format: 'cjs'
   }, {
     dir: 'workers',
-    format: 'es'
+    format: 'cjs'
   }],
   plugins: [
-    json()
+    json(),
   ]
 }, {
   input: ['./node_modules/@leofcoin/workers/src/block-worker.js'],
   output: [{
     dir: 'app/workers',
-    format: 'es'
+    format: 'cjs'
   }, {
     dir: 'workers',
-    format: 'es'
+    format: 'cjs'
   }],
   plugins: [
     json()
@@ -71,10 +71,10 @@ export default [{
   input: ['./node_modules/@leofcoin/workers/src/transaction-worker.js'],
   output: [{
     dir: 'app/workers',
-    format: 'es'
+    format: 'cjs'
   }, {
     dir: 'workers',
-    format: 'es'
+    format: 'cjs'
   }],
   plugins: [
     json()
@@ -83,10 +83,10 @@ export default [{
   input: ['./node_modules/@leofcoin/workers/src/pool-worker.js'],
   output: [{
     dir: 'app/workers',
-    format: 'es'
+    format: 'cjs'
   }, {
     dir: 'workers',
-    format: 'es'
+    format: 'cjs'
   }],
   plugins: [
     json()
