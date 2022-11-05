@@ -1,5 +1,4 @@
 app/**/*.js
-!app/workers
 node_modules
 build
 
