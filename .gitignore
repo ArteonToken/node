@@ -1,6 +1,5 @@
 app/**/*.js
 !app/workers
-app/package-lock.json
 node_modules
 build
 
