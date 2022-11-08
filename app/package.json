@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@leofcoin/chain": "^1.0.6",
+    "@leofcoin/chain": "^1.1.11",
     "@vandeurenglenn/debug": "^1.0.0",
     "@vandeurenglenn/flex-elements": "^0.1.0",
     "@vandeurenglenn/little-pubsub": "^1.3.3",
