@@ -58,10 +58,10 @@ export default [{
 }, {
   input: ['./node_modules/@leofcoin/workers/src/block-worker.js'],
   output: [{
-    dir: 'app/workers',
+    dir: 'app/',
     format: 'cjs'
   }, {
-    dir: 'workers',
+    dir: './',
     format: 'cjs'
   }],
   plugins: [
