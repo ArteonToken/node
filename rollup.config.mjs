@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import modify from 'rollup-plugin-modify';
 import { execSync } from 'child_process'
+import styles from "rollup-plugin-styles";
 
 try {
   execSync('rm -rf app/*.js')
@@ -11,7 +12,7 @@ try {
 }
 
 export default [{
-  input: ['src/www/shell.js', 'src/www/views/wallet.js', 'src/www/views/stats.js', 'src/www/views/validator.js'],
+  input: ['src/www/shell.js', 'src/www/views/wallet.js', 'src/www/views/stats.js', 'src/www/views/validator.js', 'src/www/views/editor.js'],
   output: [{
     format: 'es',
     dir: 'app'
@@ -22,7 +23,8 @@ export default [{
   plugins: [
     json(),    
     commonjs(),
-    nodeResolve()
+    nodeResolve(),
+    styles()
   ]
 }, {
   input: ['src/api.js', 'src/preload.js'],

@@ -51,4 +51,12 @@ export default class Api {
     const accounts = await walletStore.get('accounts')
     return JSON.parse(new TextDecoder().decode(accounts))
   }
+
+  async selectedAccount() {
+    return globalThis.selectedAccount
+  }
+
+  async selectAccount(address) {
+    return walletStore.put('selected-account', address)
+  }
 }

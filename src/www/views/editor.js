@@ -31,9 +31,13 @@ globalThis.MonacoEnvironment = {
 		return './editor.worker.bundle.js';
 	}
 };
+const span = document.createElement('span')
+span.classList.add('container')
+document.body.appendChild(span)
+const token = await api.readFile('./node_modules/@leofcoin/chain/src/contracts/nativeToken.js')
 
-monaco.editor.create(document.getElementById('container'), {
-	value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
+monaco.editor.create(document.querySelector('.container'), {
+	value: new TextDecoder().decode(token),
 	language: 'javascript'
 });
   }
@@ -50,17 +54,18 @@ monaco.editor.create(document.getElementById('container'), {
     justify-content: center;
   }
 
+.container {
+  width: 100%;
+  height: 100%;
+}
 
 
 </style>
 
-<flex-row>
-  <strong>validators</strong>
-  <flex-one></flex-one>
-  <span class="total-validators"></span>
-</flex-row>
 
-<button>participate</button>
+<flex-column class="container" >
+<slot></slot>
+</flex-column>
     `
   }
 })

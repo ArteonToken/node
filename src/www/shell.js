@@ -26,6 +26,9 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
   async #select(selected) {
     if (!customElements.get(`${selected}-view`)) await import(`./${selected}.js`)
     this.#pages.select(selected)
+    const monacoContainer = document.querySelector('.container')
+    if (selected === 'editor') monacoContainer.classList.add('custom-selected')
+    else monacoContainer.classList.remove('custom-selected')
   }
 
   async #onhashchange() {
@@ -98,6 +101,12 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
         box-sizing: border-box;
         height: 48px;
       }
+      ::slotted(.container) {
+        display:flex;
+        flex-direction:column;
+        width:100%;
+        height: 100%;
+      }
     </style>
     ${icons}
     <flex-row class="main">
@@ -109,6 +118,9 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
           <a href="#!/validator" data-route="validator">
             <custom-svg-icon icon="gavel"></custom-svg-icon>
           </a>
+          <a href="#!/editor" data-route="editor">
+            <custom-svg-icon icon="mode-edit"></custom-svg-icon>
+          </a>
           <a href="#!/stats" data-route="stats">
             <custom-svg-icon icon="stats"></custom-svg-icon>
           </a>
@@ -118,7 +130,9 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
         <custom-pages attr-for-selected="data-route">
           <wallet-view data-route="wallet"></wallet-view>
           <validator-view data-route="validator"></validator-view>
+          <editor-view data-route="editor"><slot></slot></editor-view>
           <stats-view data-route="stats"></stats-view>
+          
         </custom-pages>
 
 

@@ -1,5 +1,6 @@
 import Api from './api'
 import { contextBridge } from 'electron';
+import { readFile } from 'fs/promises';
 
 (async () => {
   const api = await new Api()
@@ -17,7 +18,8 @@ import { contextBridge } from 'electron';
     chain: () => api.chain,
     participate: () => api.participate(),
     balanceOf: param => api.balanceOf(param),
-    createTransactionFrom: params => api.createTransactionFrom(params)
+    createTransactionFrom: params => api.createTransactionFrom(params),
+    readFile: (path) => readFile(path)
   })
   const shell = document.querySelector('app-shell')
   shell.setAttribute('api-ready', '')

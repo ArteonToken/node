@@ -1,53 +1,29 @@
 const path = require('path');
 const webpack = require('webpack');
-module.exports = [{
-  entry: ['./app/chain.js'],
-  optimization: {
-    minimize: false
-  },
-  plugins: [
-    new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
-    }),
-    new webpack.ProvidePlugin({
-        process: 'process/browser',
-    }),
-    new webpack.ProvidePlugin({
-      WRTC_IMPORT: `globalThis.wrtc = {
-        RTCPeerConnection,
-        RTCSessionDescription,
-        RTCIceCandidate
-      }`
-    })
-  ],
-  resolve: {
-    alias: {
-      chain: false
-    },
-     
-    fallback: {
-      vm: require.resolve("vm-browserify"),
-      stream: require.resolve('stream-browserify'),
-      // "stream": require.resolve("stream-browserify"),
-      "buffer": require.resolve("buffer"),
-      crypto: require.resolve('crypto-browserify'),
-      // "path": require.resolve("path-browserify"),
-      os: require.resolve("os-browserify/browser"),
-      url: false,
-      util: false,
-      path: require.resolve("path-browserify"),
-      fs: false
-      // "assert": require.resolve("assert/"),
-    }
-  },
-  // experiments: {
-  //   outputModule: true
-  // },
-  output: {
-    // library: {
-    //   type: 'module'
-    // },
-    filename: 'chain.js',
-    path: path.resolve(__dirname, 'app'),
-  }
-}];
+module.exports = {
+	entry: {
+		// Package each language's worker and give these filenames in `getWorkerUrl`
+		'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+		'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
+		'css.worker': 'monaco-editor/esm/vs/language/css/css.worker',
+		'html.worker': 'monaco-editor/esm/vs/language/html/html.worker',
+		'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker'
+	},
+	output: {
+		globalObject: 'self',
+		filename: '[name].bundle.js',
+		path: path.resolve(__dirname, 'app')
+	},
+	module: {
+		rules: [
+			{
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader']
+			},
+			{
+				test: /\.ttf$/,
+				use: ['file-loader']
+			}
+		]
+	}
+};
