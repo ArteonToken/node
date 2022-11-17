@@ -2,7 +2,7 @@
   "name": "@artonline/node",
   "productName": "ArtOnline Node",
   "setupName": "ArtOnlineNodeSetup",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "ArtOnline Node GUI",
   "company": "Artonline",
   "appId": "org.artonline.nodegui",
