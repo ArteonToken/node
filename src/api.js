@@ -10,11 +10,11 @@ export default class Api {
 
   async #init() {
     await new Node({
-      network: 'leofcoin:mandarine'
+      network: 'leofcoin:peach'
     })
     console.log(peernet);
     await nodeConfig({
-      network: 'leofcoin:mandarine'
+      network: 'leofcoin:peach'
     })
     this._chain = await new Chain()
     console.log(this.chain);
