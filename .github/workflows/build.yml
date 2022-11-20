@@ -39,7 +39,9 @@ jobs:
       - name: upload artifacts
         uses: actions/upload-artifact@v3       
         with: 
-          path: build/*.*
+          path: |
+            build/*
+            !build/unpacked
         # uses: VandeurenGlenn/action-electron-kit@v1.1.1
         # with:
         #   # GitHub token, automatically provided to the action
