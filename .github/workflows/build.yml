@@ -22,11 +22,11 @@ jobs:
       - name: install rollup
         run: npm i -g rollup
 
-      - name: install project dependencies
-        run: npm i
-
       - name: install app dependencies
-        run: cd app && npm i && cd ..
+        run: npm run install-dependencies
+
+      - name: tempfix link issue
+        run: rm -rf /home/runner/work/node/node/app/node_modules/tiny-secp256k1/build/node_gyp_bins/python3
 
       - name: build app
         run: npm run build
