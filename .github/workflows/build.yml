@@ -36,10 +36,14 @@ jobs:
       - name: build app
         run: npm run build
 
-      - name: upload artifacts
-        uses: actions/upload-artifact@v3       
-        with: 
-          path: |
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          draft: true
+          title: "Development Build"
+          files: |
             build/*
             !build/unpacked
         # uses: VandeurenGlenn/action-electron-kit@v1.1.1
