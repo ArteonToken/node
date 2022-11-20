@@ -24,8 +24,9 @@ jobs:
 
       - name: install app dependencies
         run: npm run install-dependencies
-
+        
       - name: tempfix link issue
+        if: ${{ matrix.os == 'ununtu-latest' }}
         run: rm -rf /home/runner/work/node/node/app/node_modules/tiny-secp256k1/build/node_gyp_bins/python3
 
       - name: build app
