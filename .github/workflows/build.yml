@@ -36,7 +36,7 @@ jobs:
       - name: build app
         run: npm run build
 
-      uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         # with:
         path: build/*.*
         # uses: VandeurenGlenn/action-electron-kit@v1.1.1
