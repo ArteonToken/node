@@ -10,6 +10,10 @@
   "main": "./app/index.js",
   "scripts": {
     "install-dependencies": "npm i && cd app && npm i && cd ..",
+    "upgrade-dependencies": "npm upgrade && cd app && npm upgrade && cd ..",
+    "copy-contracts": "cp node_modules/@leofcoin/chain/src/contracts app/templates -r",
+    "copy-standards": "cp node_modules/@leofcoin/chain/src/standards app/templates -r",
+    "copy-templates": "npm run copy-standards && npm run copy-contracts",
     "docs": "sh node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
     "start": "electron app/index.js",
     "c": "rollup -c",

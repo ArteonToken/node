@@ -35,7 +35,7 @@ export default class Api {
   }
   get peers() { return this.node.peers }
   get validators() { return this.chain.validators }
-  participate() { return this.chain.participate() }
+  participate(address) { return this.chain.participate(address) }
   get nativeToken() { return this.chain.nativeToken }
   async balanceOf(address) {
     const balances = await this.chain.balances
@@ -52,8 +52,8 @@ export default class Api {
     return JSON.parse(new TextDecoder().decode(accounts))
   }
 
-  async selectedAccount() {
-    return globalThis.selectedAccount
+  selectedAccount() {
+    return peernet.selectedAccount
   }
 
   async selectAccount(address) {

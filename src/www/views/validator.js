@@ -15,7 +15,7 @@ export default customElements.define('validator-view', class ValidatorView exten
     this.#validators = await api.validators()
     this.shadowRoot.querySelector('.total-validators').innerHTML = this.#validators.length
 
-    this.shadowRoot.querySelector('button').addEventListener('click', () => api.participate())
+    this.shadowRoot.querySelector('button').addEventListener('click', () => api.participate(api.selectedAccount()))
   }
 
   get template() {

@@ -16,10 +16,12 @@ import { readFile } from 'fs/promises';
     validators: () => api.validators,
     peernet: () => api.peernet,
     chain: () => api.chain,
-    participate: () => api.participate(),
+    participate: (address) => api.participate(address),
     balanceOf: param => api.balanceOf(param),
     createTransactionFrom: params => api.createTransactionFrom(params),
-    readFile: (path) => readFile(path)
+    readFile: (path) => readFile(path),
+    selectedAccount: () => api.selectedAccount(),
+    selectAccount: address => api.selectAccount(address)
   })
   const shell = document.querySelector('app-shell')
   shell.setAttribute('api-ready', '')

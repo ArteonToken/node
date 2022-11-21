@@ -4,3 +4,5 @@ build
 workers
 # Webpack
 .webpack/
+
+!app/templates

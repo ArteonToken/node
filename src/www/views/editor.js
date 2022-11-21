@@ -3,7 +3,7 @@ import { version } from './../../../package.json'
 import * as monaco from 'monaco-editor';
 export default customElements.define('editor-view', class editorView extends HTMLElement {
   #validators = []
-
+  #editor
   constructor() {
     super()
 
@@ -31,15 +31,21 @@ globalThis.MonacoEnvironment = {
 		return './editor.worker.bundle.js';
 	}
 };
-const span = document.createElement('span')
+globalThis.monaco = monaco
+let span = document.createElement('span')
 span.classList.add('container')
 document.body.appendChild(span)
-const token = await api.readFile('./node_modules/@leofcoin/chain/src/contracts/nativeToken.js')
 
-monaco.editor.create(document.querySelector('.container'), {
-	value: new TextDecoder().decode(token),
-	language: 'javascript'
-});
+const token = await api.readFile('./templates/contracts/nativeToken.js')
+const standard = await api.readFile('./templates/standards/token.js')
+
+const tokenModel = monaco.editor.createModel(new TextDecoder().decode(token), 'javascript');
+const standardModel = monaco.editor.createModel(new TextDecoder().decode(standard), 'javascript');
+
+this.#editor = monaco.editor.create(document.querySelector('.container'));
+this.#editor.setModel(standardModel);
+this.#editor.setModel(tokenModel);
+
   }
 
   get template() {

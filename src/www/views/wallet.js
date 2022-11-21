@@ -43,7 +43,7 @@ export default customElements.define('wallet-view', class WalletView extends HTM
     this.shadowRoot.querySelector('custom-selector').addEventListener('selected', this.#addressSelected.bind(this))
   }
 
-  #addressSelected({detail}) {
+  async #addressSelected({detail}) {
     if (!detail) detail = this.#accounts[0][1]
 
     Array.from(this.shadowRoot.querySelectorAll('.address')).forEach(item => {
@@ -51,6 +51,7 @@ export default customElements.define('wallet-view', class WalletView extends HTM
     })
 
     this.selectedAccount = detail
+    await api.selectAccount(detail)
   }
 
   #select(selected) {
@@ -67,8 +68,7 @@ export default customElements.define('wallet-view', class WalletView extends HTM
     const amount = this.#amount.value
     let from = this.selectedAccount
     const method = 'transfer'
-    const token = await api.nativeToken()
-    if (to === from) from = await api.peerId()
+    const token = await api.nativeToken()    
     const params = [from, to, parseUnits(amount).toString()]
     api.createTransactionFrom([from, token, method, params])
   }
