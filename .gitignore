@@ -1,5 +1,6 @@
 app/**/*.js
 !app/templates/**/*.js
+app/**/*.LICENSE.txt
 
 node_modules
 build
