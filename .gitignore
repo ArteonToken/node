@@ -1,4 +1,6 @@
 app/**/*.js
+!app/templates/**/*.js
+
 node_modules
 build
 workers
