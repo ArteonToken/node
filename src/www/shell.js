@@ -77,7 +77,7 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
         display: flex;
         flex-direction: column;
         font-family: 'Noto Sans', sans-serif;
-        background: linear-gradient(45deg, #66477c, transparent);
+        background: linear-gradient(45deg, #6495ed78, transparent);
       }
 
       .main {
@@ -92,7 +92,7 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
 
       .custom-selector-overlay {
         background: #ffffff8c;
-        --svg-icon-color: #66477c;
+        --svg-icon-color: #5b6f93;
         border-right: 1px solid #eee;
       }
 

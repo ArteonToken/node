@@ -4,27 +4,37 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import modify from 'rollup-plugin-modify';
 import { execSync } from 'child_process'
 import styles from "rollup-plugin-styles";
-
 try {
   execSync('rm -rf app/*.js')
+  execSync('rm -rf app/*.LICENSE.txt')
 } catch {
 
 }
 
+
+const views = [
+  'src/www/wallet.js', 'src/www/stats.js', 'src/www/validator.js', 'src/www/editor.js'
+]
+
 export default [{
-  input: ['src/www/shell.js', 'src/www/views/wallet.js', 'src/www/views/stats.js', 'src/www/views/validator.js', 'src/www/views/editor.js'],
+  input: ['src/www/shell.js', ...views],
   output: [{
     format: 'es',
     dir: 'app'
   }],
   external: [
-    './api.js'
+    './api.js',
+    './monaco/monaco-loader.js',
+    '@monaco-import'
   ],
   plugins: [
-    json(),    
-    commonjs(),
+    json(),
+    styles(),
     nodeResolve(),
-    styles()
+    commonjs(),
+    modify({
+      '@monaco-import': './monaco/monaco-loader.js'
+    })
   ]
 }, {
   input: ['src/api.js', 'src/preload.js'],
@@ -46,48 +56,18 @@ export default [{
     dir: 'app'
   }]
 }, {
-  input: ['./node_modules/@leofcoin/workers/src/machine-worker.js'],
-  output: [{
-    dir: 'app/workers',
-    format: 'cjs'
-  }, {
-    dir: 'workers',
-    format: 'cjs'
-  }],
-  plugins: [
-    json(),
-  ]
-}, {
   input: ['./node_modules/@leofcoin/workers/src/block-worker.js'],
   output: [{
     dir: 'app/',
     format: 'cjs'
-  }, {
-    dir: './',
-    format: 'cjs'
   }],
   plugins: [
     json()
   ]
 }, {
-  input: ['./node_modules/@leofcoin/workers/src/transaction-worker.js'],
+  input: ['./node_modules/@leofcoin/workers/src/transaction-worker.js', './node_modules/@leofcoin/workers/src/pool-worker.js', './node_modules/@leofcoin/workers/src/machine-worker.js'],
   output: [{
     dir: 'app/workers',
-    format: 'cjs'
-  }, {
-    dir: 'workers',
-    format: 'cjs'
-  }],
-  plugins: [
-    json()
-  ]
-}, {
-  input: ['./node_modules/@leofcoin/workers/src/pool-worker.js'],
-  output: [{
-    dir: 'app/workers',
-    format: 'cjs'
-  }, {
-    dir: 'workers',
     format: 'cjs'
   }],
   plugins: [

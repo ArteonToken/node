@@ -1,5 +1,3 @@
-import { version } from './../../../package.json'
-
 export default customElements.define('validator-view', class ValidatorView extends HTMLElement {
   #validators = []
 

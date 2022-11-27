@@ -1,4 +1,4 @@
-import { version } from './../../../package.json'
+import { version } from '../../package.json'
 
 export default customElements.define('stats-view', class StatsView extends HTMLElement {
 

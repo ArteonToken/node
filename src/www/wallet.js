@@ -1,6 +1,6 @@
-import './../elements/account'
+import './elements/account'
 // import { nativeToken } from './../../../node_modules/@leofcoin/addresses/src/addresses'
-import { parseUnits } from './../../../node_modules/@leofcoin/utils/src/utils'
+import { parseUnits } from './../../node_modules/@leofcoin/utils/src/utils'
 
 
 export default customElements.define('wallet-view', class WalletView extends HTMLElement {
@@ -68,7 +68,7 @@ export default customElements.define('wallet-view', class WalletView extends HTM
     const amount = this.#amount.value
     let from = this.selectedAccount
     const method = 'transfer'
-    const token = await api.nativeToken()    
+    const token = api.nativeToken
     const params = [from, to, parseUnits(amount).toString()]
     api.createTransactionFrom([from, token, method, params])
   }
@@ -93,8 +93,8 @@ export default customElements.define('wallet-view', class WalletView extends HTM
     height: 100%;
   }
 
-  .custom-selected {
-    background: #7f65929e;
+  custom-selector .custom-selected {
+    background: #5b6f93;
     color: #eee;
   }
   custom-pages {
@@ -140,7 +140,7 @@ export default customElements.define('wallet-view', class WalletView extends HTM
   a {
     padding: 0 12px;
     cursor: pointer;
-    --svg-icon-color: #7f6592;
+    --svg-icon-color: #5b6f93;
   }
 
   .container {
@@ -169,7 +169,7 @@ export default customElements.define('wallet-view', class WalletView extends HTM
 
   .custom-selector-overlay {
     background: #ffffff8c;
-    --svg-icon-color: #66477c;
+    --svg-icon-color: #5b6f93;
     border-right: 1px solid #eee;
   }
 
