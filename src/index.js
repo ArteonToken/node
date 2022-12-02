@@ -69,8 +69,8 @@ if (handleSquirrelEvent()) {} else {
   const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-      width: 1040,
-      height: 640,
+      width: 1366,
+      height: 768,
       webPreferences: {
         nodeIntegration: true,
         nodeIntegrationInWorker: true,
