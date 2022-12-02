@@ -23,7 +23,7 @@ let span = document.createElement('span')
 span.classList.add('container')
 document.body.querySelector('app-shell').appendChild(span)
 
-const token = await api.readFile('./templates/contracts/nativeToken.js')
+const token = await api.readFile('./templates/wizard/my-token.js')
 const standard = await api.readFile('./templates/standards/token.js')
 const roles = await api.readFile('./templates/standards/roles.js')
 
@@ -54,13 +54,7 @@ monaco.languages.typescript.javascriptDefaults.addExtraLib(`
 // }
 // `, 'token.d.ts')
 
-const tokenModel = monaco.editor.createModel(`import Token from './../standards/token.js'
-
-export default class MyToken extends Token {
-  constructor(state) {
-    super('MyToken', 'MTK', 18, state)
-  }
-}`, 'javascript', monaco.Uri.parse('file://app/templates/wizard/token.js'));
+const tokenModel = monaco.editor.createModel(new TextDecoder().decode(token), 'javascript', monaco.Uri.parse('file://app/templates/wizard/my-token.js'));
 
 const standardModel = monaco.editor.createModel(new TextDecoder().decode(standard), 'javascript',  monaco.Uri.parse('file://app/templates/standards/token.js'));
 const standarRolesdModel = monaco.editor.createModel(new TextDecoder().decode(roles), 'javascript',  monaco.Uri.parse('file://app/templates/standards/roles.js'));
@@ -79,14 +73,50 @@ const standarRolesdModel = monaco.editor.createModel(new TextDecoder().decode(ro
     }
   });
 
+  pubsub.subscribe('deployment-dependencies', this.ondependencies.bind(this))
+
   this.shadowRoot.querySelector('button').addEventListener('click', this.deploy.bind(this))
   }
 
+  ondependencies(dependencies) {
+    this.show(`found ${dependencies.length} dependencies
+        ${JSON.stringify(dependencies)}
+      `)
+
+      setTimeout(() => {
+        this.show('rolling up')
+      }, 3000)
+  }
+
   async deploy() {
+    this.show('deploying')
     const code = monaco.editor.getModels()[0].getLinesContent().join('\n')
-    await api.deploy(code)
+    const result = await api.deploy(code)
+    this.show(`
+    <flex-row style="width: 100%; max-width: 640px; align-items: center;">
+      <h4>${result.name}</h4>
+      <flex-one></flex-one>
+      <custom-svg-icon icon="close"></custom-svg-icon>
+    </flex-row>
+    <flex-row style="width: 100%; max-width: 640px; align-items: center; padding-bottom: 48px;">
+      <h5>${result.address}</h5>
+    </flex-row>
     
+    <p style="width: 100%; max-width: 640px; overflow-y: auto;">${result.code}</p>
+    `)
+      
+    this.shadowRoot.querySelector('custom-svg-icon[icon="close"]').addEventListener('click', this.hide.bind(this))
     
+  }
+
+  show(value) {
+    this.shadowRoot.querySelector('.updates').setAttribute('shown', '')
+    this.shadowRoot.querySelector('.updates').innerHTML = value
+  }
+
+  hide() {
+    this.shadowRoot.querySelector('.updates').removeAttribute('shown')
+    this.shadowRoot.querySelector('custom-svg-icon[icon="close"]').removeEventListener('click', this.hide.bind(this))
   }
 
   get template() {
@@ -124,9 +154,29 @@ const standarRolesdModel = monaco.editor.createModel(new TextDecoder().decode(ro
   text-transform: capitalize;
   color: #eee;
 }
+
+.updates {
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 1;
+  padding: 24px;
+}
+
+.updates[shown] {  
+  opacity: 1;
+  pointer-events: auto;
+}
 </style>
 
-
+<flex-column class="updates"></flex-column>
 <button class="fab">publish</button>
 <flex-column class="container">
 <slot></slot>
