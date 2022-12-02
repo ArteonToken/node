@@ -13,7 +13,7 @@ try {
 
 
 const views = [
-  'src/www/wallet.js', 'src/www/stats.js', 'src/www/validator.js', 'src/www/editor.js'
+  'src/www/wallet.js', 'src/www/stats.js', 'src/www/validator.js', 'src/www/editor.js', 'src/www/explorer.js'
 ]
 
 export default [{

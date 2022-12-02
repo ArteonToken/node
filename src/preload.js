@@ -22,7 +22,10 @@ import { readFile } from 'fs/promises';
     readFile: (path) => readFile(path),
     selectedAccount: () => api.selectedAccount(),
     selectAccount: address => api.selectAccount(address),
-    deploy: api.deploy,
+    deploy: (code) => api.deploy(code),
+    blocks: (amount) => api.blocks(amount),
+    lookup: (name) => api.lookup(name),
+    staticCall: (contract, method, params = []) => api.staticCall(contract, method, params),
     pubsub: {
       subscribers: pubsub.subscribers,
       subscribe: (ev, fn) => pubsub.subscribe(ev, fn),

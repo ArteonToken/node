@@ -10,8 +10,15 @@ export default customElements.define('validator-view', class ValidatorView exten
 
 
   async connectedCallback() {
-    this.#validators = await api.validators()
-    this.shadowRoot.querySelector('.total-validators').innerHTML = this.#validators.length
+    const result = await api.lookup('ArtOnlineValidators')
+    
+    this.#validators = await api.staticCall(result.address, 'validators')
+    console.log(this.#validators);
+    if (this.#validators[await api.selectedAccount()]) {
+      await api.participate(await api.selectedAccount())
+    }
+    this.shadowRoot.querySelector('.total-validators').innerHTML = Object.keys(this.#validators).length
+    this.shadowRoot.querySelector('.validators-online').innerHTML = Object.values(this.#validators).filter(validator => validator.lastSeen - new Date().getTime() > 30_000).length
 
     this.shadowRoot.querySelector('button').addEventListener('click', () => api.participate(api.selectedAccount()))
   }
@@ -33,9 +40,21 @@ export default customElements.define('validator-view', class ValidatorView exten
 </style>
 
 <flex-row>
-  <strong>validators</strong>
+
+  
+  <span>total validators</span>
+    
   <flex-one></flex-one>
-  <span class="total-validators"></span>
+  <strong class="total-validators"></strong>
+  
+</flex-row>
+
+<flex-row>
+  <span>online validators</span>
+  <flex-one></flex-one>
+  <strong class="validators-online"></strong>
+  
+  
 </flex-row>
 
 <button>participate</button>

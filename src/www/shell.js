@@ -19,6 +19,8 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
     this.shadowRoot.innerHTML = this.template
   }
 
+ 
+
   get #pages() {
     return this.shadowRoot.querySelector('custom-pages')
   }
@@ -78,6 +80,9 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
         flex-direction: column;
         font-family: 'Noto Sans', sans-serif;
         background: linear-gradient(45deg, #6495ed78, transparent);
+        font-size: .875rem;
+        font-weight: 400;
+        line-height: 1.5;
       }
 
       .main {
@@ -107,6 +112,19 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
         width:100%;
         height: 100%;
       }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(225,255,255,0.5);
+      }
     </style>
     ${icons}
     <flex-row class="main">
@@ -114,6 +132,9 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
         <custom-selector attr-for-selected="data-route">
           <a href="#!/wallet" data-route="wallet">
             <custom-svg-icon icon="wallet"></custom-svg-icon>
+          </a>
+          <a href="#!/explorer" data-route="explorer">
+            <custom-svg-icon icon="explorer"></custom-svg-icon>
           </a>
           <a href="#!/validator" data-route="validator">
             <custom-svg-icon icon="gavel"></custom-svg-icon>
@@ -129,6 +150,7 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
 
         <custom-pages attr-for-selected="data-route">
           <wallet-view data-route="wallet"></wallet-view>
+          <explorer-view data-route="explorer"></explorer-view>
           <validator-view data-route="validator"></validator-view>
           <editor-view data-route="editor"><slot></slot></editor-view>
           <stats-view data-route="stats"></stats-view>
