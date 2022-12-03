@@ -29,13 +29,39 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
     if (!customElements.get(`${selected}-view`)) await import(`./${selected}.js`)
     this.#pages.select(selected)
     const monacoContainer = document.querySelector('.container')
-    if (selected === 'editor') monacoContainer.classList.add('custom-selected')
-    else monacoContainer.classList.remove('custom-selected')
+    if (monacoContainer) {
+      if (selected === 'editor') monacoContainer.classList.add('custom-selected')
+      else monacoContainer.classList.remove('custom-selected')
+    }
   }
 
   async #onhashchange() {
-    const selected = location.hash.split('/')[1]
-    selected && this.#select(selected)
+    const parts = location.hash.split('/')
+    let params = parts[1].split('?')
+    const selected = params[0]
+    
+    const object = {}
+    if (params.length > 1) {
+      params = params[1].split('&')
+      for (let param of params) {
+        param = param.split('=')
+        object[param[0]] = param[1]
+      }
+    }
+    
+    
+    
+    console.log(selected, object);
+    selected && await this.#select(selected)
+
+    if (selected === 'explorer' && object.block !== undefined) {
+      await this.shadowRoot.querySelector('explorer-view').select('block')
+      this.shadowRoot.querySelector('explorer-view').setInfo(object.block, object.index)
+    }
+    if (selected === 'explorer' && object.transaction !== undefined) {
+      await this.shadowRoot.querySelector('explorer-view').select('transaction') && this.shadowRoot.querySelector('explorer-view').setInfo(object.transaction, object.index)
+    }
+    if (selected === 'explorer' && Object.keys(object).length === 0) await this.shadowRoot.querySelector('explorer-view').shadowRoot.querySelector('custom-pages').select('home')
   }
 
   async init() {
@@ -56,7 +82,7 @@ export default customElements.define('app-shell', class AppShell extends HTMLEle
 
   async apiReady() {
     onhashchange = this.#onhashchange.bind(this)
-    if (location.hash.split('/')[1]) this.#select(location.hash.split('/')[1])
+    if (location.hash.split('/')[1]) this.#onhashchange()
     else this.#select('wallet')
   }
 

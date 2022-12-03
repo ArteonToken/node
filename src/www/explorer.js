@@ -1,8 +1,17 @@
 import { html, LitElement } from 'lit'
 import {map} from 'lit/directives/map.js'
 import './elements/latest'
+import './elements/explorer/info-container'
+import { formatBytes } from '@leofcoin/utils/src/utils'
+
 
 export default customElements.define('explorer-view', class ExplorerView extends LitElement {
+
+  static properties = {
+    items: {
+      type: Array
+    }
+  }
 
   constructor() {
     super()
@@ -11,7 +20,71 @@ export default customElements.define('explorer-view', class ExplorerView extends
   }
   #blocks = []
   #transactions = []
-  #validators = []
+
+  async updateInfo() {
+    const lookupValidators = await api.lookup('ArtOnlineValidators')
+    
+    const validators = await api.staticCall(lookupValidators.address, 'validators')
+    const lookupFactory = await api.lookup('ArtOnlineContractFactory')
+
+    this.items = [[{
+      title: 'transactions',
+      items: [{
+        title: 'transfers',
+        value: api.nativeTransfers
+      }, {
+        title: 'burns',
+        value: api.nativeBurns
+      }, {
+        title: 'mints',
+        value: api.nativeMints
+      }]        
+    }, {
+      title: 'validators',
+      items: [{
+        title: 'total',
+        value: Object.keys(validators).length
+      }, {
+        title: 'online',
+        value: Object.values(validators).filter(({lastSeen}) => lastSeen - new Date().getTime() < 60_000).length
+      }]
+    }], [{
+      title: 'contracts',
+      items: [{
+        title: 'total',
+        value: (await api.contracts()).length
+      }, {
+        title: 'registered',
+        value: await api.staticCall(lookupFactory.address, 'totalContracts')        
+      }, {
+        title: 'native calls',
+        value: api.nativeCalls
+      }]
+    }, {
+      title: 'chain',
+      items: [{
+        title: 'blocks',
+        value: api.totalBlocks
+      }, {
+        title: 'transactions',
+        value: api.totalTransactions
+      }, {
+        title: 'size',
+        value: formatBytes(api.totalSize)
+      }]
+    }]]
+  }
+
+  async select(selected) {
+    if (!customElements.get(`${selected}-view`)) await import(`./${selected}.js`)
+    this.selected = selected
+    this.shadowRoot.querySelector('custom-pages').select(selected)    
+  }
+
+  setInfo(hash, index) {
+    console.log(hash, index);
+    this.shadowRoot.querySelector('custom-pages').querySelector('.custom-selected').updateInfo(hash, index)
+  }
 
   #addBlock(block) {
     console.log(block);
@@ -30,15 +103,12 @@ export default customElements.define('explorer-view', class ExplorerView extends
     this.#blocks = await api.blocks(-25).reverse()
     let i = 0
     while (this.#transactions.length < 25) {
-      if (this.#blocks[i].transactions.length < 26) this.#blocks[i].transactions.slice(0, this.#blocks[i].transactions.length)
-      this.#transactions = [...this.#transactions, ...this.#blocks[i].transactions.slice(-25 - (this.#blocks[i].transactions.length - 1))]
+      if (this.#blocks[i].transactions.length < 25) this.#blocks[i].transactions.slice(0, this.#blocks[i].transactions.length - 1)
+      this.#transactions = [...this.#transactions, ...this.#blocks[i].transactions.slice(-25)]
       i++
     }
 
-    const result = await api.lookup('ArtOnlineValidators')
-    
-    this.#validators = await api.staticCall(result.address, 'validators')
-
+    this.updateInfo()
     this.requestUpdate()
 
     api.pubsub.subscribe('add-block', this.#addBlock.bind(this))
@@ -54,14 +124,13 @@ export default customElements.define('explorer-view', class ExplorerView extends
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    padding: 48px;
-    box-sizing: border-box;
   }
 
-
-  .bottom-bar {
-    align-items: center;
-    height: 48px;
+  flex-wrap-evenly {
+    
+    padding: 48px;
+    box-sizing: border-box;
+    overflow-y: auto;
   }
 
   flex-row {
@@ -77,23 +146,21 @@ export default customElements.define('explorer-view', class ExplorerView extends
     height: 100%;
   }
 
-  .peers-container {
-    padding-top: 24px;
-  }
-
-  .version {
-    padding: 12px 0;
-  }
-
   .latest-blocks, .latest-transactions {
     width: 100%;
     height: 100%;
     padding: 12px;
     box-sizing: border-box;
+    
+    overflow-y: auto;
+  }
+
+  .container {
+    padding: 12px;
+    box-sizing: border-box;
     background: #ffffff52;
     border-radius: 24px;
     box-shadow: 1px 1px 14px 0px #0000002e;
-    overflow-y: auto;
   }
   
   .container h4 {
@@ -114,122 +181,28 @@ export default customElements.define('explorer-view', class ExplorerView extends
     -webkit-box-shadow: inset 0 0 6px rgba(225,255,255,0.5);
   }
 
-  .info-container {
-    
-    max-width: 600px;
-    height: auto;
-    height: 120px;
-  }
-
-  .info-container .info:first-child {
-    margin-right: 12px;
-    
-  }
-
-  .info-container:first-child {
+  explorer-info-container:first-child {
     margin-bottom: 12px;
   }
 
-  .info {
-    background: #2c314a00;
-    border-radius: 24px;
-    box-sizing: border-box;
-    padding: 6px 12px;
-    /* border: 1px solid #4677ff; */
-    /* color: #fff; */
-    box-shadow: 0px 0px 16px 6px #8890b75c;
+  explorer-info-container explorer-info:first-child {
+    margin-right: 12px;
   }
 
-
+  h4 {
+    margin: 0;
+    padding: 6px 0;
+  }
 </style>
-<flex-wrap-evenly>
+<custom-pages attr-for-selected="data-route">
+<flex-wrap-evenly data-route="home">
+  ${map(this.items, item => html`
+  <flex-column style="height: auto;">
+    <explorer-info-container items=${JSON.stringify(item)}></explorer-info-container>
+  </flex-column>
   
-<flex-row class="info-container">
-<flex-column class="info">
-    <h4>transactions</h4>
-    <flex-row class="">
-      <span>total</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.keys(this.#validators).length}
-      </strong>
-      
-    </flex-row>
-
-    <flex-row class="">
-      <span>online</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.values(this.#validators).filter(validator => validator.lastSeen - new Date().getTime() > 30_000).length}
-      </strong>
-      
-    </flex-row>
-  </flex-column>
-  <flex-column class="info">
-    <h4>validators</h4>
-    <flex-row class="">
-      <span>total</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.keys(this.#validators).length}
-      </strong>
-      
-    </flex-row>
-
-    <flex-row class="">
-      <span>online</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.values(this.#validators).filter(validator => validator.lastSeen - new Date().getTime() > 30_000).length}
-      </strong>
-      
-    </flex-row>
-  </flex-column>
-
-
-</flex-row>
-<flex-row class="info-container">
-  <flex-column class="info">
-    <h4>contracts</h4>
-    <flex-row class="">
-      <span>total</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.keys(this.#contracts).length}
-      </strong>
-      
-    </flex-row>
-
-    <flex-row class="">
-      <span>calls</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.values(this.#validators).filter(validator => validator.lastSeen - new Date().getTime() > 30_000).length}
-      </strong>
-      
-    </flex-row>
-  </flex-column>
-  <flex-column class="info">
-    <h4>validators</h4>
-    <flex-row class="">
-      <span>total</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.keys(this.#validators).length}
-      </strong>
-      
-    </flex-row>
-
-    <flex-row class="">
-      <span>online</span>
-      <flex-one></flex-one>
-      <strong>
-      ${Object.values(this.#validators).filter(validator => validator.lastSeen - new Date().getTime() > 30_000).length}
-      </strong>
-      
-    </flex-row>
-  </flex-column>
-  </flex-row>
+  `)}
+  
   <flex-column class="container">
     
   <h4>latest blocks</h4>
@@ -250,6 +223,11 @@ ${map(this.#transactions, item => html`
   `)}
   </flex-column>
   </flex-column>
-</flex-wrap-evenly>`
+</flex-wrap-evenly>
+
+<block-view data-route="block"></block-view>
+<transaction-view data-route="transaction"></transaction-view>
+</custom-pages>
+`
   }
 })

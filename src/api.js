@@ -103,6 +103,7 @@ export default class Api {
   }
 
   get node() {
+    this.chain.nativeBurns
     return globalThis.peernet
   }
 
@@ -113,6 +114,16 @@ export default class Api {
   validators() { return this.chain.validators }
   lookup(name) {return this.chain.lookup(name)}
   staticCall(contract, method, params) {return this.chain.staticCall(contract, method, params)}
+  get nativeBurns() { return this.chain.nativeBurns }
+  get contracts() {return this.chain.contracts}
+  get nativeMints() { return this.chain.nativeMints }
+  get nativeTransfers() { return this.chain.nativeTransfers }
+  get totalSize() { return this.chain.totalSize}
+  get totalTransactions() { return this.chain.totalTransactions}
+  get totalBlocks() { return this.chain.blocks.length}
+  
+  get nativeCalls() { return this.chain.nativeCalls }
+  
   get participating() { return this.chain.participating }
   participate(address) { return this.chain.participate(address) }
   get nativeToken() { return this.chain.nativeToken }
@@ -122,6 +133,8 @@ export default class Api {
     return formatUnits(balances[address])
   }
 
+  get hasTransactionToHandle() {return this.chain.hasTransactionToHandle}
+  getBlock(index) { return this.chain.blocks[index]}
   blocks(amount) { return this.chain.blocks.slice(amount) }
   
   balances() { return this.chain.balances }

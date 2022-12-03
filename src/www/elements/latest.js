@@ -28,6 +28,11 @@ export default customElements.define('latest-element', class LatestElement exten
   constructor() {
     super()
     this.attachShadow({mode: 'open'})
+    this.addEventListener('click', this.#click.bind(this))
+  }
+
+  #click() {
+    location.hash = `#!/explorer?${this.type}=${this.value.hash}&index=${this.value.index}`
   }
 
   get #blockTemplate() {
@@ -44,7 +49,7 @@ export default customElements.define('latest-element', class LatestElement exten
     total = formatUnits(total).toLocaleString()
     return html`
       <flex-column class="first-column">
-        <a class="index" href="#!/explorer?block=${this.value.index}">${this.value.index}</a>        
+        <a class="height" href="#!/explorer?block=${this.value.hash}">${Number(this.value.index) + 1}</a>
         <time-ago value=${this.value.timestamp}></time-ago>
       </flex-column>
         
