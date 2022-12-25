@@ -1,16 +1,27 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
+import { execSync, spawn } from 'child_process'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { app.quit() }
+
+let mainWindow
+let chainReady
+
+const server = spawn('node', ['--openssl-legacy-provider', './launch.mjs'])
+
+server.stdout.on('data', data => {
+  if (data.toString().includes('listening on 4040')) {
+    chainReady = true
+    mainWindow.webContents.send('chain:ready', true)
+  }
+  else console.log(data.toString());
+})
 
 const handleSquirrelEvent = () => {
   if (process.argv.length === 1) {
     return false;
   }
-
-  const ChildProcess = require('child_process');
-  const path = require('path');
 
   const appFolder = path.resolve(process.execPath, '..');
   const rootAtomFolder = path.resolve(appFolder, '..');
@@ -21,7 +32,7 @@ const handleSquirrelEvent = () => {
     let spawnedProcess, error;
 
     try {
-      spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+      spawnedProcess = spawn(command, args, {detached: true});
     } catch (error) {}
 
     return spawnedProcess;
@@ -66,14 +77,15 @@ const handleSquirrelEvent = () => {
   }
 }
 if (handleSquirrelEvent()) {} else {
+
   const createWindow = () => {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
       width: 1366,
       height: 768,
       webPreferences: {
         nodeIntegration: true,
-        nodeIntegrationInWorker: true,
+        // nodeIntegrationInWorker: true
         preload: path.join(__dirname, 'preload.js')
       }
     });
@@ -82,6 +94,9 @@ if (handleSquirrelEvent()) {} else {
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
     // Open the DevTools.
+    mainWindow.webContents.on('did-finish-load', () => {
+      if (chainReady) mainWindow.webContents.send('chain:ready', true)
+    })
     mainWindow.webContents.openDevTools();
   };
 
