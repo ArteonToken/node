@@ -3,7 +3,6 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import modify from 'rollup-plugin-modify';
 import { execSync } from 'child_process'
-import styles from "rollup-plugin-styles";
 try {
   execSync('rm -rf app/*.js')
   execSync('rm -rf app/*.LICENSE.txt')
@@ -29,7 +28,6 @@ export default [{
   ],
   plugins: [
     json(),
-    styles(),
     nodeResolve(),
     commonjs(),
     modify({
@@ -50,11 +48,41 @@ export default [{
 		})
   ]
 }, {
-  input: 'src/index.js',
+  input: 'src/chain.js',
+  output: [{
+    format: 'es',
+    file: 'app/chain.mjs'
+  }],
+}, {
+  input: ['src/index.js', './node_modules/@leofcoin/storage/src/store.js'],
   output: [{
     format: 'cjs',
     dir: 'app'
-  }]
+  }],
+  plugins: [
+
+    json(),
+    nodeResolve()
+  ],
+  external: [
+    'bittorent-tracker',
+    '@leofcoin/p2pt',
+    'simple-sha1',
+    'randombytes',
+    'debug',
+    'inquirer',
+    'lodash',
+    'signal-exit',
+    'onetime',
+    'eventemitter3',
+    'classic-level',
+    'qrcode',
+    'secp256k1',
+    'bn.js',
+    'electron',
+    '@koush/wrtc',
+    './password.js'
+  ]
 }, {
   input: ['./node_modules/@leofcoin/workers/src/block-worker.js'],
   output: [{

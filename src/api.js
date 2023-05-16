@@ -1,6 +1,6 @@
-import nodeConfig from './../node_modules/@leofcoin/lib/src/node-config.js'
-import Node from './../node_modules/@leofcoin/chain/dist/node.js'
-import Chain from './../node_modules/@leofcoin/chain/dist/chain.js';
+import nodeConfig from '@leofcoin/lib/node-config'
+import Node from './../node_modules/@leofcoin/chain/exports/node.js'
+import Chain from './../node_modules/@leofcoin/chain/exports/chain.js';
 import { formatUnits } from '@leofcoin/utils';
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util';

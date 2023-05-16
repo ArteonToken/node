@@ -1,22 +1,42 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import { execSync, spawn } from 'child_process'
+import { platform } from 'os'
+import EasyWorker from '@vandeurenglenn/easy-worker'
 
+const host = platform()
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { app.quit() }
+if (host === 'win32') {
+  if (require('electron-squirrel-startup')) { app.quit() }
+}
 
+let chainWorker
 let mainWindow
 let chainReady
 
-const server = spawn('node', ['--openssl-legacy-provider', './launch.mjs'])
+import('inquirer').then((importee) => importee.default.prompt([{
+  type: 'password',
+  name: 'password',
+  required: true
+}]).then(async ({password}) => {
+  chainWorker = await new EasyWorker('./chain.mjs')
 
-server.stdout.on('data', data => {
-  if (data.toString().includes('listening on 4040')) {
-    chainReady = true
-    mainWindow.webContents.send('chain:ready', true)
-  }
-  else console.log(data.toString());
-})
+  chainWorker.onmessage(message => {
+    console.log(message);
+  })
+
+  chainWorker.postMessage({password})
+}))
+
+
+
+// chainWorker.on('data', data => {
+//   if (data.toString().includes('listening on 4040')) {
+//     chainReady = true
+//     mainWindow.webContents.send('chain:ready', true)
+//   }
+//   else console.log(data.toString());
+// })
 
 const handleSquirrelEvent = () => {
   if (process.argv.length === 1) {

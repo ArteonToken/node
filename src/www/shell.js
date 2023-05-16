@@ -1,4 +1,4 @@
-import Pubsub from './../../node_modules/@vandeurenglenn/little-pubsub/src/index'
+import Pubsub from '@vandeurenglenn/little-pubsub'
 import './../../node_modules/@vandeurenglenn/flex-elements/src/flex-elements'
 import './../../node_modules/custom-pages/src/custom-pages'
 import './../../node_modules/custom-selector/src/index'
